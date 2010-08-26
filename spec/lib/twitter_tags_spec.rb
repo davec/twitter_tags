@@ -78,6 +78,18 @@ describe 'TwitterTags' do
 
       pages(:home).should render(tag).with_error('the count attribute should be a positive integer')
     end
+
+    it 'should render no output on a search exception' do
+      tag = %{<r:twitter user='openminds_be'><r:tweets>.</r:tweets></r:twitter>}
+      expected = ''
+
+      twitter_search_obj = Twitter::Search.new
+      Twitter::Search.should_receive(:new).and_return(twitter_search_obj)
+      twitter_search_obj.should_receive(:from).with('openminds_be').and_return(twitter_search_obj)
+      twitter_search_obj.should_receive(:per_page).with(10).and_raise(Crack::ParseError)
+
+      pages(:home).should render(tag).as(expected)
+    end
     
     # it 'should honour the order attribute' do
     #   flunk

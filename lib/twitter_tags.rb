@@ -19,9 +19,12 @@ module TwitterTags
 
     # iterate over the tweets
     result = []
-    Twitter::Search.new.from(tag.locals.user).per_page(count).each do |tweet|
-      tag.locals.tweet = tweet
-      result << tag.expand
+    begin
+      Twitter::Search.new.from(tag.locals.user).per_page(count).each do |tweet|
+        tag.locals.tweet = tweet
+        result << tag.expand
+      end
+    rescue
     end
     
     result
